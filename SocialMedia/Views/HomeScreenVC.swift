@@ -12,7 +12,6 @@ struct HomeScreenVC: View {
     @StateObject private var homeScreenView = HomeScreenModel()
     
     var body: some View {
-        
         NavigationView {
             
             if let arrPosts = homeScreenView.arrPostsList {
@@ -28,30 +27,18 @@ struct HomeScreenVC: View {
                             PostRows(post: post).onAppear(){
                                
                                 //For pagination
-                                //I'm checking the total list count with current list count
-                                if arrPosts.count < homeScreenView.totalPages {
-                                    
-                                    //We can change it according our requirements
-                                    if index > arrPosts.count - 10 {
-                                        
-                                        //If the exciting api request is finished
-                                        if self.homeScreenView.prefetchState == .idle {
-                                            
-                                            //page index update. loading status
-                                            self.homeScreenView.prefetchState = .fetching
-                                            self.homeScreenView.currPage = self.homeScreenView.currPage + 1
-                                            self.homeScreenView.performWSToGetPostsList()
-                                        }
-                                        
-                                    }
-                                }
+                                self.homeScreenView.preLoadigPostList(currListCount: arrPosts.count, currIndex: index)
                             }
                         }
+                    
+                        //.buttonStyle(PlainButtonStyle())
                     }
+                    
                 }
                 .navigationBarTitle("Home Screen", displayMode:  .inline)
             }
         }.padding(.all,0)
+        .preferredColorScheme(.dark)
     }
 }
 
@@ -68,8 +55,8 @@ struct PostRows: View {
                 .resizable()
                 .clipShape(Circle())
                 .overlay(
-                    Circle().stroke(Color.black, lineWidth: 3.0))
-                .frame(width: 62, height: 62, alignment: .center)
+                    Circle().stroke(Color.white, lineWidth: 2.0))
+                .frame(width: 52, height: 52, alignment: .center)
                 .gesture(
                     TapGesture()
                         .onEnded { _ in
@@ -80,19 +67,18 @@ struct PostRows: View {
             VStack(alignment: .leading) {
                 
                 Text("User ID: \(post.user_id ?? 0)")
-                    .font(.title)
-                Text(post.title ?? "")
                     .font(.headline)
-                Spacer(minLength: 12)
+                Spacer(minLength:6)
+                Text(post.title ?? "")
+                    .font(.subheadline)
+                Spacer(minLength: 15)
                 Text(post.body ?? "")
                     .font(.subheadline)
+                    .foregroundColor(.gray)
                     .lineLimit(nil)
             }.padding(.leading,4)
-            
-            
         }.padding(.init(top: 8, leading: 0, bottom: 12, trailing: 0))
     }
-    
 }
 
 struct HomeScreenVC_Previews: PreviewProvider {

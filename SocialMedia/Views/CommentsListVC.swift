@@ -26,23 +26,7 @@ struct CommentsListVC: View {
                         CommentsRows(comments: comment).onAppear(){
                             
                             //For pagination
-                            //I'm checking the total list count with current list count
-                            if arrComments.count < commentsScreenView.totalPages {
-                              
-                                //We can change it according our requirements
-                                if index > arrComments.count - 10 {
-                                    
-                                    //If the exciting api request is finished
-                                    if self.commentsScreenView.prefetchState == .idle {
-                                        
-                                        //page index update. loading status. pre loading request
-                                        self.commentsScreenView.prefetchState = .fetching
-                                        self.commentsScreenView.currPage = self.commentsScreenView.currPage + 1
-                                        self.commentsScreenView.performWSToGetCommentsList()
-                                    }
-                                   
-                                }
-                            }
+                            self.commentsScreenView.preLoadigCommentsList(currListCount: arrComments.count, currIndex: index)
                         }
                     }
                 }
@@ -65,18 +49,20 @@ struct CommentsRows: View {
                 .resizable()
                 .clipShape(Circle())
                 .overlay(
-                    Circle().stroke(Color.black, lineWidth: 3.0))
+                    Circle().stroke(Color.white, lineWidth: 2.0))
                 .frame(width: 62, height: 62, alignment: .center)
             
             VStack(alignment: .leading) {
                 
                 Text(comments.name ?? "")
                     .font(.headline)
+                Spacer(minLength:6)
                 Text(comments.email ?? "")
-                    .font(.title3)
-                Spacer(minLength: 12)
+                    .font(.subheadline)
+                Spacer(minLength: 15)
                 Text(comments.body ?? "")
                     .font(.subheadline)
+                    .foregroundColor(.gray)
                     .lineLimit(nil)
             }.padding(.leading,4)
         }.padding(.init(top: 8, leading: 0, bottom: 12, trailing: 0))

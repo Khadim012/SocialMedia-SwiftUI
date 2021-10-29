@@ -15,6 +15,27 @@ class CommentsScreenView: ObservableObject {
     @Published var totalPages = 0
     
     init() { self.performWSToGetCommentsList() }
+    
+    
+    func preLoadigCommentsList(currListCount: Int, currIndex: Int) {
+        
+        //I'm checking the total list count with current list count
+        if currListCount < self.totalPages {
+          
+            //We can change it according our requirements
+            if currIndex > currListCount - 10 {
+                
+                //If the exciting api request is finished
+                if self.prefetchState == .idle {
+                    
+                    //page index update. loading status. pre loading request
+                    self.prefetchState = .fetching
+                    self.currPage = self.currPage + 1
+                    self.performWSToGetCommentsList()
+                }
+            }
+        }
+    }
 }
 
 //MARK:- WebServices
